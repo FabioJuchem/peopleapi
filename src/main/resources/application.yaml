@@ -1,0 +1,22 @@
+spring:
+  profiles: default
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://ec2-107-22-253-158.compute-1.amazonaws.com:5432/datidk0v8msvk1
+    username: joezimhiwnbhck
+    password: 37041b42aaca37be25300ee24a5a85d53fa6954222faec715f95fd385159c66f
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+      properties:
+        hibernate.generate_statistics: false
+  liquibase:
+    change-log: classpath:liquibase/changelog.yml
+
+server:
+  port: 8080
+
+
+
