@@ -17,8 +17,6 @@ public class PersonFilterDTO implements Serializable {
 
     private String orderBy = "name";
 
-    private String order = "asc";
-
     public PersonFilterDTO() {
         // JPA Required
     }
@@ -40,14 +38,14 @@ public class PersonFilterDTO implements Serializable {
     }
 
     public boolean hasName() {
-        return Objects.nonNull(name);
+        return Objects.nonNull(name) && !name.isBlank();
     }
 
     public boolean hasDocument() {
-        return Objects.nonNull(document);
+        return Objects.nonNull(document) && !document.isBlank();
     }
 
     public boolean hasBirthDate() {
-        return Objects.nonNull(birthDate);
+        return Objects.nonNull(birthDate) && !birthDate.toString().isBlank();
     }
 }
