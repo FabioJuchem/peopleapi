@@ -16,7 +16,7 @@ public class Contact {
     private String name;
 
     @Column(name = "phone_number")
-    private String phoneNumber;
+    private Long phoneNumber;
 
     @Column(name = "email")
     private String email;
@@ -29,7 +29,7 @@ public class Contact {
     public Contact() {
     }
 
-    public static Contact of(String name, String phoneNumber, String email, Person person) {
+    public static Contact of(String name, Long phoneNumber, String email, Person person) {
         Contact contact = new Contact();
         contact.name = name;
         contact.phoneNumber = phoneNumber;
@@ -46,7 +46,7 @@ public class Contact {
         return name;
     }
 
-    public String getPhoneNumber() {
+    public Long getPhoneNumber() {
         return phoneNumber;
     }
 

@@ -10,7 +10,7 @@ class ContactTest {
     @Test
     void of_shouldBuildNewContact() {
         String name = "Fake Test Name";
-        String phoneNumber = "448825251414";
+        Long phoneNumber = 448825251414L;
         String email = "fake email";
         Person person = new Person();
 

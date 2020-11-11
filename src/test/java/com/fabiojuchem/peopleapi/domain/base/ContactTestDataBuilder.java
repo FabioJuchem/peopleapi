@@ -7,7 +7,7 @@ public class ContactTestDataBuilder {
 
     public static final String NAME = "Fake Name";
 
-    public static final String PHONE_NUMBER = "4154544511";
+    public static final Long PHONE_NUMBER = 4154544511L;
 
     public static final String EMAIL = "email@email.com";
 

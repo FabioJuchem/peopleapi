@@ -13,7 +13,7 @@ public class ContactDTO implements Serializable {
 
     private String name;
 
-    private String phoneNumber;
+    private Long phoneNumber;
 
     private String email;
 
@@ -32,7 +32,7 @@ public class ContactDTO implements Serializable {
         return name;
     }
 
-    public String getPhoneNumber() {
+    public Long getPhoneNumber() {
         return phoneNumber;
     }
 
