@@ -21,6 +21,7 @@ public class PersonFilterDTO implements Serializable {
         // JPA Required
     }
 
+
     public PersonFilterDTO(String name, String document, LocalDate birthDate) {
         this.name = name;
         this.document = document;

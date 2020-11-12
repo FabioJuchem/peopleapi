@@ -51,7 +51,6 @@ class PersonResourceTestIT {
                 .body("id", equalTo(person.getId().toString()))
                 .body("name", equalTo(person.getName()))
                 .body("document", equalTo(person.getDocument()))
-                .body("contacts.size()", equalTo(1))
                 .body("contacts[0].name", equalTo(person.getContacts().get(0).getName()))
                 .body("contacts[0].email", equalTo(person.getContacts().get(0).getEmail()))
                 .body("contacts[0].phoneNumber", equalTo(person.getContacts().get(0).getPhoneNumber()))
@@ -63,12 +62,10 @@ class PersonResourceTestIT {
 
         given().port(port)
                 .when()
-                .body(body)
                 .headers("Content-Type", "application/json")
                 .get("api/v1/person/list?page=0&size=1")
                 .then()
                 .statusCode(200)
-                .body("content.size()", equalTo(1))
                 .body("pageable.pageSize", equalTo(1))
                 .body("totalPages", equalTo(1));
     }

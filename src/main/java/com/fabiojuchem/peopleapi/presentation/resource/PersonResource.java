@@ -13,7 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.Name;
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @RestController
@@ -35,8 +37,12 @@ public class PersonResource {
     }
 
     @GetMapping(value = "api/v1/person/list", params = { "page", "size" })
-    public Page<PersonDTO> getAllPersons(@RequestBody PersonFilterDTO filter, Pageable pageable) {
-        return filterPersonService.getAllFiltered(filter, pageable);
+    public Page<PersonDTO> getAllPersons(
+            @RequestParam String name,
+            @RequestParam String document,
+            @RequestParam LocalDate birthDate,
+            Pageable pageable) {
+        return filterPersonService.getAllFiltered(new PersonFilterDTO(name, document, birthDate), pageable);
     }
 
     @PostMapping(value = "api/v1/person")
