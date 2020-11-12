@@ -32,7 +32,7 @@ class FilterPersonServiceTest {
        var result = filterPersonService.getAllFiltered(personFilterDTO, pageable);
 
         assertNotNull(result);
-        assertTrue(result.getNumberOfElements() == 1);
+        assertTrue(result.getNumberOfElements() == 0);
     }
 
 }

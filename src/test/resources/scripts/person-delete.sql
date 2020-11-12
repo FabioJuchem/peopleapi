@@ -1,0 +1,1 @@
+delete from person where name = 'Fake Name'

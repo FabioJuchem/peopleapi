@@ -24,4 +24,6 @@ public class MessageDictionary {
 
     public static final String PERSON_CONTACT_REQUIRED = "At least one contact is required";
 
+    public static final String PERSON_NOT_FOUND = "Person Not found";
+
 }

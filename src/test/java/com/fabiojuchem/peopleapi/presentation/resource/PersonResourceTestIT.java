@@ -3,17 +3,19 @@ package com.fabiojuchem.peopleapi.presentation.resource;
 import com.fabiojuchem.peopleapi.domain.base.PersonTestDataBuilder;
 import com.fabiojuchem.peopleapi.domain.person.Person;
 import com.fabiojuchem.peopleapi.domain.person.PersonRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.jdbc.Sql;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql(scripts ="/scripts/contact-delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(scripts ="/scripts/person-delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class PersonResourceTestIT {
 
     @Autowired
@@ -24,43 +26,20 @@ class PersonResourceTestIT {
 
     private Person person;
 
-    private String body = "{\"name\":\"Fake Name\",\"document\": \" \" ,\"birthDate\": \" \"}";
+    private String body = BasePersonTestIT.BODY;
 
-    private String bodyWithContact =  "{\n" +
-            "    \"name\": \"Fake Name\",\n" +
-            "    \"document\": \"60745888054\",\n" +
-            "    \"birthDate\": \"2020-10-10\",\n" +
-            "    \"contacts\": [\n" +
-            "            { \n" +
-            "                \"name\": \"contactName\", \n" +
-            "                \"phoneNumber\": \"15156151\",\n" +
-            "                \"email\": \"email@email.com\" \n" +
-            "            }\n" +
-            "        ]\n" +
-            "}";
+    private String bodyWithContact =  BasePersonTestIT.BODY_WITH_CONTACT;
 
-    private String bodyWithContactEmailInvalid =  "{\n" +
-            "    \"name\": \"Fake Name\",\n" +
-            "    \"document\": \"60745888054\",\n" +
-            "    \"birthDate\": \"2020-10-10\",\n" +
-            "    \"contacts\": [\n" +
-            "            { \n" +
-            "                \"name\": \"contactName\", \n" +
-            "                \"phoneNumber\": \"15156151\",\n" +
-            "                \"email\": \"email\" \n" +
-            "            }\n" +
-            "        ]\n" +
-            "}";
+    private String bodyWithContactEmailInvalid =  BasePersonTestIT.BODY_WITH_CONTACT_EMAIL_INVALID;
+
+    private String contactBody = BasePersonTestIT.CONTACT_BODY;
+
+    private String contactBodyInvalidEmail = BasePersonTestIT.CONTACT_BODY_INVALID_EMAIL;
 
     @BeforeEach
     void setUp() {
         person = PersonTestDataBuilder.newPersonWithContacts();
         personRepository.save(person);
-    }
-
-    @AfterEach
-    void delete() {
-        personRepository.delete(person);
     }
 
     @Test
@@ -135,5 +114,42 @@ class PersonResourceTestIT {
                 .post("api/v1/person")
                 .then()
                 .statusCode(400);
+    }
+
+    @Test
+    void addContact_validRequest_shouldAddContact() {
+
+        given().port(port)
+                .when()
+                .body(contactBody)
+                .headers("Content-Type", "application/json")
+                .put("api/v1/person/"+person.getId()+"/contact")
+                .then()
+                .statusCode(200)
+                .body("name", equalTo("contactName"))
+                .body("phoneNumber", equalTo(15156151))
+                .body("email", equalTo("email@email.com"));
+    }
+
+    @Test
+    void addContact_withInvalidEmail_shouldNotAddContact() {
+
+        given().port(port)
+                .when()
+                .body(contactBodyInvalidEmail)
+                .headers("Content-Type", "application/json")
+                .put("api/v1/person/"+person.getId()+"/contact")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    void deletePerson_withInvalidEmail_shouldNotAddContact() {
+
+        given().port(port)
+                .when()
+                .delete("api/v1/person/"+person.getId())
+                .then()
+                .statusCode(200);
     }
 }

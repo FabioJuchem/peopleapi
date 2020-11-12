@@ -1,9 +1,11 @@
 package com.fabiojuchem.peopleapi.domain.person.service;
 
 import com.fabiojuchem.peopleapi.domain.base.PersonTestDataBuilder;
+import com.fabiojuchem.peopleapi.domain.contact.DTO.PersistContactDTO;
 import com.fabiojuchem.peopleapi.domain.person.DTO.PersistPersonDTO;
 import com.fabiojuchem.peopleapi.domain.person.Person;
 import com.fabiojuchem.peopleapi.domain.person.PersonRepository;
+import javassist.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,11 +14,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 class PersonServiceTest {
@@ -29,6 +29,9 @@ class PersonServiceTest {
 
     @Mock
     private PersistPersonDTO persistPersonDTO;
+
+    @Mock
+    private PersistContactDTO persistContactDTO;
 
     @Test
     void getPersonByName_whenExists_shouldReturnPersonDTO() {
@@ -63,6 +66,60 @@ class PersonServiceTest {
         assertEquals(person.getName(), result.getName());
         assertEquals(person.getDocument(), result.getDocument());
         assertEquals(person.getBirthDate(), result.getBirthDate());
+    }
+
+    @Test
+    void addContact_validRequest_shouldAddContact() throws NotFoundException {
+        var person = PersonTestDataBuilder.newPerson();
+        var name = "Fake";
+        var phoneNumber = 151515115L;
+        var email = "email@email.com";
+
+        when(personRepository.getOne(person.getId())).thenReturn(person);
+        when(persistContactDTO.getName()).thenReturn(name);
+        when(persistContactDTO.getPhoneNumber()).thenReturn(phoneNumber);
+        when(persistContactDTO.getEmail()).thenReturn(email);
+
+        var result = personService.addContact(persistContactDTO, person.getId());
+
+        assertNotNull(result);
+        verify(personRepository).save(person);
+        assertEquals(name, result.getName());
+        assertEquals(phoneNumber, result.getPhoneNumber());
+        assertEquals(email, result.getEmail());
+    }
+
+    @Test
+    void addContact_personNotExists_shouldAddContact() throws NotFoundException {
+        var person = PersonTestDataBuilder.newPerson();
+
+        when(personRepository.getOne(person.getId())).thenReturn(null);
+
+        assertThrows(NotFoundException.class, () ->personService.addContact(persistContactDTO, person.getId()));
+
+        verify(personRepository, never()).save(person);
+    }
+
+    @Test
+    void deletePerson_whenPersonExists_shouldDeletePerson() throws NotFoundException {
+        var person = PersonTestDataBuilder.newPerson();
+
+        when(personRepository.getOne(person.getId())).thenReturn(person);
+
+        personService.deletePerson(person.getId());
+
+        verify(personRepository).delete(person);
+    }
+
+    @Test
+    void deletePerson_whenPersonNotExists_shouldNotDeletePerson() throws NotFoundException {
+        var person = PersonTestDataBuilder.newPerson();
+
+        when(personRepository.getOne(person.getId())).thenReturn(null);
+
+        assertThrows(NotFoundException.class, () -> personService.deletePerson(person.getId()));
+
+        verify(personRepository, never()).delete(person);
     }
 
 }
