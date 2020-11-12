@@ -37,7 +37,7 @@ public class Person {
     }
 
     public static Person of(String name, String document, LocalDate birthDate) {
-        var person = new Person();
+        Person person = new Person();
         person.name = name;
         person.document = document;
         person.birthDate = birthDate;
