@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.fabiojuchem.peopleapi.infrastructure.dictionary.MessageDictionary.PERSON_NOT_FOUND;
@@ -29,16 +30,16 @@ public class PersonService {
     }
 
     public PersonDTO getPersonByName(String name) {
-        var person = personRepository.findPersonByName(name);
+        Optional<Person> person = personRepository.findPersonByName(name);
         if (person.isPresent()) {
-            var foundPerson = person.get();
+            Person foundPerson = person.get();
             return new PersonDTO(foundPerson);
         }
         return null;
     }
 
     public PersonDTO save(PersistPersonDTO personDTO) {
-        var person = Person.of(personDTO.getName(), personDTO.getDocument(), personDTO.getBirthDate());
+        Person person = Person.of(personDTO.getName(), personDTO.getDocument(), personDTO.getBirthDate());
         personDTO.getContacts().forEach(
                 contact -> person.addContact(Contact.of(contact.getName(), contact.getPhoneNumber(), contact.getEmail(), person))
         );
@@ -46,7 +47,7 @@ public class PersonService {
     }
 
     public ContactDTO addContact(PersistContactDTO contactDTO, UUID personId) throws NotFoundException {
-        var person = personRepository.getOne(personId);
+        Person person = personRepository.getOne(personId);
         if (!Objects.isNull(person)) {
             return createAndSaveContact(contactDTO, person);
         }
@@ -55,7 +56,7 @@ public class PersonService {
 
     @Transactional
     private ContactDTO createAndSaveContact(PersistContactDTO contactDTO, Person person) {
-        var contact = Contact.of(contactDTO.getName(), contactDTO.getPhoneNumber(), contactDTO.getEmail(), person);
+        Contact contact = Contact.of(contactDTO.getName(), contactDTO.getPhoneNumber(), contactDTO.getEmail(), person);
         person.addContact(contact);
         personRepository.save(person);
         return new ContactDTO(contact);
@@ -63,7 +64,7 @@ public class PersonService {
 
     @Transactional
     public void deletePerson(UUID personId) throws NotFoundException {
-        var person = personRepository.getOne(personId);
+        Person person = personRepository.getOne(personId);
         if (!Objects.isNull(person)) {
             personRepository.delete(person);
         } else {

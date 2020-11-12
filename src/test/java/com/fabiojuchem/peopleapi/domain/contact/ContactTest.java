@@ -14,7 +14,7 @@ class ContactTest {
         String email = "fake email";
         Person person = new Person();
 
-        var contact = Contact.of(name, phoneNumber, email, person);
+        Contact contact = Contact.of(name, phoneNumber, email, person);
 
         assertEquals(name, contact.getName());
         assertEquals(phoneNumber, contact.getPhoneNumber());

@@ -18,7 +18,7 @@ public class PersonTestDataBuilder {
     }
 
     public static Person newPersonWithContacts() {
-        var person = newPerson();
+        Person person = newPerson();
         person.addContact(ContactTestDataBuilder.newContact(person));
         return person;
     }

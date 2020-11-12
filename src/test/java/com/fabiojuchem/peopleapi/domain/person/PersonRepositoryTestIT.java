@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,10 +20,10 @@ class PersonRepositoryTestIT {
 
     @Test
     void findPersonByName_whenExists_shouldReturnPerson() {
-        var person = PersonTestDataBuilder.newPerson();
+        Person person = PersonTestDataBuilder.newPerson();
         personRepository.save(person);
 
-        var result = personRepository.findPersonByName(person.getName());
+        Optional<Person> result = personRepository.findPersonByName(person.getName());
 
         assertTrue(result.isPresent());
         assertEquals(person.getName(), result.get().getName());
