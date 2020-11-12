@@ -11,6 +11,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +20,7 @@ public class FilterPersonService extends QuerydslRepositorySupport {
     @Autowired
     public FilterPersonService() { super(Person.class); }
 
+    @Transactional
     public Page<PersonDTO> getAllFiltered(PersonFilterDTO filter, Pageable pageable) {
         var pagination = customPagination(filter, pageable);
         var results = findPersons(filter, pagination);

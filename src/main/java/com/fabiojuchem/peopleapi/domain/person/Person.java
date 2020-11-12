@@ -20,16 +20,12 @@ public class Person {
     @Id
     private UUID id = UUID.randomUUID();
 
-    @NotNull(message = PERSON_NAME_REQUIRED)
     @Column(name = "name")
     private String name;
 
-    @CPF(message = PERSON_DOCUMENT_INVALID)
-    @NotNull(message = PERSON_DOCUMENT_REQUIRED)
     @Column(name = "document")
     private String document;
 
-    @NotNull(message = PERSON_BIRTH_DATE_REQUIRED)
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
