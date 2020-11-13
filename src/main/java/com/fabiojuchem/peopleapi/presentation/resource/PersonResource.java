@@ -31,11 +31,13 @@ public class PersonResource {
         this.filterPersonService = filterPersonService;
     }
 
+    @CrossOrigin
     @GetMapping("api/v1/person")
     public PersonDTO getPersonByName(@RequestParam String name) {
         return personService.getPersonByName(name);
     }
 
+    @CrossOrigin
     @GetMapping(value = "api/v1/person/list", params = { "page", "size" })
     public Page<PersonDTO> getAllPersons(
             @RequestParam String name,
@@ -45,11 +47,13 @@ public class PersonResource {
         return filterPersonService.getAllFiltered(new PersonFilterDTO(name, document, birthDate), pageable);
     }
 
+    @CrossOrigin
     @PostMapping(value = "api/v1/person")
     public PersonDTO save(@Valid @RequestBody PersistPersonDTO personDTO) {
         return personService.save(personDTO);
     }
 
+    @CrossOrigin
     @PutMapping(value = "api/v1/person/{id}/contact")
     public ContactDTO addContact(
             @Valid @RequestBody PersistContactDTO contactDTO,
@@ -58,6 +62,7 @@ public class PersonResource {
         return personService.addContact(contactDTO, id);
     }
 
+    @CrossOrigin
     @DeleteMapping(value = "api/v1/person/{id}")
     public void delete(@PathVariable UUID id) throws NotFoundException {
         personService.deletePerson(id);
